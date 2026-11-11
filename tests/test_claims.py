@@ -253,7 +253,7 @@ def test_abstand_zu_den_zahlen_der_messung_v8_und_v19b():
     assert abs(sales - 119.5) < 0.5                        # die Verkaufsregel stimmt mit der Vormessung überein (119,5 ± 0,2)
     assert km_mean != pytest.approx(183.0, abs=1.0) and abs(km_mean - 183.0) < 4.0       # Kaplan–Meier bedingt auf schätzbar: 179,9 gegen 183,0, größer als ein Punkt Abstand
     assert abs(km_share - 0.54) < 0.05 and abs(km_share - 0.62) < 0.05                  # der Anteil liegt zwischen den beiden Vormessungen (54 % und 62 %)
-    for needle in ("aus Verkäufen 119,5 ± 0,2 (−37 %), aus Kaplan–Meier 183,0 ± 2,0 (−4 %), Kaplan–Meier in 54 % der Läufe definiert", "Die Vormessung V19 selbst gab für dieselbe Welt 62 % an"):
+    for needle in ("aus Verkäufen 119,5 ± 0,2 (−37 %), aus Kaplan–Meier 183,0 ± 2,0 (−4 %), Kaplan–Meier in 54 % der Läufe definiert", "Eine andere Zelle der Vormessung gab für dieselbe Welt 62 % an"):
         assert needle in README, needle
 
 

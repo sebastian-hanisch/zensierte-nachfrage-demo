@@ -65,6 +65,17 @@ Weiter unten: **🔬 Experiment 1** (von Hand, in Brüchen), **❓ Kernfrage mit
 """
 )
 
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/zensierte-nachfrage-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Wer wissen will, wie viel er bestellen soll, hat die Verkäufe, aber nicht die Nachfrage. War ein Artikel ausverkauft, sagt der Verkauf nur: Mindestens so viel wurde verlangt. Die Demo erzeugt Verkäufe aus einer bekannten Nachfrage und vergleicht drei Wege zur Bestellmenge: die Verkäufe einfach als Nachfrage lesen, eine Kurve, die ausverkaufte Perioden als „mindestens so viel“ mitzählt (Kaplan–Meier), und eine angepasste Form der Nachfrage (zensiertes Lognormal). Sie zeigt, wie weit die Menge aus den Verkäufen danebenliegt, wo die Kurve keine Zahl liefert und was die Fehler an Kosten bedeuten. Vorausgesetzt ist, dass der Bestand nicht von der Nachfrage abhängt. Alle Zahlen sind erzeugt.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/zensierte-nachfrage-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
+
 with st.expander("So funktioniert Kaplan–Meier bei Ausverkauf", expanded=True):
     st.markdown(
         """
@@ -257,10 +268,10 @@ st.markdown(
     """
 | Annahme | Was gilt, wenn sie verletzt ist |
 |---|---|
-| **Bestand unabhängig von der Nachfrage** | Nicht gemessen: Die Welt dieser Demo zieht Bestand und Nachfrage getrennt. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ, und Kaplan–Meier kann verzerrt sein; Richtung und Größe hängen am Mechanismus (Stück „Informatives Zensieren“ der Linie, [informatives-zensieren-demo](https://github.com/sebastian-hanisch/informatives-zensieren-demo)). |
+| **Bestand unabhängig von der Nachfrage** | Nicht gemessen: Die Welt dieser Demo zieht Bestand und Nachfrage getrennt. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ, und Kaplan–Meier kann verzerrt sein; Richtung und Größe hängen am Mechanismus (Demo „Informatives Zensieren“ der Linie, [informatives-zensieren-demo](https://github.com/sebastian-hanisch/informatives-zensieren-demo)). |
 | **Nachfrage unabhängig und gleich verteilt** | Nicht gemessen: Saison, Trend und Aktionen sind nicht erzeugt; die Zahlen sagen darüber nichts. |
 | **Ausverkauf ist erkennbar, entgangene Nachfrage kommt nicht wieder** | Nicht gemessen: Kommt entgangene Nachfrage später als Nachbestellung, ist sie nicht zensiert, sondern verschoben; ein Ausverkauf kurz vor Ladenschluss gilt hier als genau beobachtet, wenn Bestand übrig ist. |
-| **Form der Nachfrage (Lognormal)** | Gemessen (Experiment 4 und README): bei gamma-verteilter Nachfrage ist das zensierte Lognormal bei τ = 0,9 deutlich teurer als Kaplan–Meier mit Rückfall (10,6 % gegen 3,2 % Mehrkosten, Bestand 100, 500 Perioden, 1000 Läufe). |
+| **Form der Nachfrage (Lognormal)** | Gemessen (Experiment 4 und README): bei gamma-verteilter Nachfrage ist das zensierte Lognormal bei τ = 0,9 teurer als Kaplan–Meier mit Rückfall (10,6 % gegen 3,2 % Mehrkosten, Bestand 100, 500 Perioden, 1000 Läufe; das 3,3-Fache). |
 | **Genug Perioden im Risiko** | Gemessen (README): Mit 100 Perioden ist das Kaplan–Meier-Quantil 0,9 bei Bestand 100 in 42 % der Läufe schätzbar, mit 1000 Perioden in 70 %. |
 """
 )
@@ -271,6 +282,28 @@ with st.expander("⚠️ Annahmen, Grenzen und bekannte Probleme"):
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/zensierte-nachfrage-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben sind je Periode der Bestand $B_i$ und der Verkauf $V_i = \min(D_i, B_i)$; die Nachfrage $D_i$ ist nur zu sehen, wenn der Verkauf unter dem Bestand liegt. Gesucht sind das Quantil $q_\tau$ der Nachfrage (die beste Bestellmenge) und die Mehrkosten einer geschätzten Bestellmenge.
+
+| Symbol | Bedeutung |
+|---|---|
+| $D_i,\ B_i,\ V_i$ | Nachfrage, Bestand und Verkauf der Periode $i$; $V_i = \min(D_i, B_i)$ |
+| $\delta_i$ | $1$, wenn die Nachfrage genau bekannt ist (Verkauf unter dem Bestand), $0$ bei Ausverkauf (Nachfrage mindestens so groß wie der Bestand) |
+| $x_{(1)}, \dots, x_{(K)}$ | die verschiedenen genau beobachteten Werte, aufsteigend sortiert |
+| $n_k,\ d_k$ | Zahl der Perioden im Risiko bei $x_{(k)}$ (alle mit $V_i \ge x_{(k)}$) und Zahl der genau beobachteten bei $x_{(k)}$ |
+| $\hat S(x)$ | Kaplan–Meier-Schätzer der Überlebensfunktion $P(D > x)$ |
+| $\tau$ | Quantil der Bestellregel, $\tau = b/(b + h)$ |
+| $b,\ h$ | Kosten je fehlendes und je überschüssiges Stück |
+| $q_\tau,\ \hat q_\tau$ | wahres und geschätztes Quantil |
+| $\Phi,\ \varphi$ | Verteilungs- und Dichtefunktion der Standardnormalverteilung |
+| $\mu,\ \sigma$ | Parameter des Lognormals: $\ln D \sim \mathrm{N}(\mu, \sigma^2)$ |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/zensierte-nachfrage-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **Lesehilfe.** *Gegeben:* je Periode $i$ der Bestand $B_i$ und der Verkauf $V_i = \min(D_i, B_i)$; die Nachfrage $D_i$ selbst ist nur zu sehen, wenn $V_i < B_i$. *Gesucht:* das Quantil $q_\tau = F_D^{-1}(\tau)$ der Nachfrage (die beste Bestellmenge) und die Mehrkosten einer geschätzten Bestellmenge.
@@ -328,5 +361,5 @@ st.markdown("---")
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
     "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
-    "Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html)."
+    "Mehr zur Reihe: [Überlebenszeit: zensierte Zeiten lesen](https://sebastianhanisch.net/konzepte-ueberlebenszeit.html)."
 )

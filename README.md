@@ -1,7 +1,6 @@
 # Zensierte Nachfrage: Ausverkauft heißt mindestens so viel – Streamlit-Demo
 
-<!-- TODO nach dem Deploy: direkt hierher den Live-Link setzen (Leerzeile davor und danach):
-**[→ Demo live ausprobieren](https://sebastianhanisch-zensierte-nachfrage-demo.streamlit.app/)** -->
+**[→ Demo live ausprobieren](https://sebastianhanisch-zensierte-nachfrage-demo.streamlit.app/)**
 
 Teil der Linie **Überlebenszeit** (Zeit bis zum Ereignis bei Beobachtungen, die irgendwann abbrechen) in der „Konzepte“-Reihe für die Website „Sebastian Hanisch – Operations Research und Machine Learning“.
 Hier ist die Brücke zur Optimierung: Dieselbe Mathematik wie bei der Verweilzeit von Containern, aber die Zensierung kommt vom **Bestand** statt vom Ende eines Beobachtungsfensters. Ist ein Artikel in einer Periode **ausverkauft**,
@@ -24,30 +23,30 @@ Die Zahl in Geld: Mit Fehlmengenkosten $\tau$ und Überschusskosten $1 - \tau$ j
 ausverkauft sind, sind es 128,9 % (das 2,3-Fache), beide bei $\tau = 0{,}9$, 500 Perioden und 1000 Läufen. Die Kernfrage ist: Wie weit liegt das Quantil aus den Verkäufen daneben, was leistet Kaplan–Meier, wo ist seine Grenze, und was kostet
 die Formannahme des zensierten Lognormals, wenn sie falsch ist?
 
-Die „−37 %“ gelten nur für diese Welt (Bestand lognormal mit σ 0,3, 50,0 % ausverkauft, $\tau = 0{,}9$); über die Quantile 0,5 bis 0,95 liegt die Verkaufsregel zwischen −19 % und −42 % (Tabelle unten), und die 58 % schätzbarer Läufe gehören immer dazu.
+Die „−37 %“ gelten nur für diese Welt (Bestand lognormal mit σ 0,3, 50,0 % ausverkauft, $\tau = 0{,}9$); über die Quantile 0,5 bis 0,95 liegt die Verkaufsregel zwischen −19 % und −42 % (Tabelle unten), die 58 % schätzbarer Läufe gelten nur für $\tau$ = 0,9, Bestand 100, 500 Perioden und 1000 Läufe (Messung 4: 42 % bis 70 % je nach Zahl der Perioden).
 
-## Befunde und Korrekturen gegenüber dem Plan
+## Befunde und Korrekturen gegenüber der ersten Messung
 
-(Plan: `PLAN-11-zensierte-nachfrage.md` der Linien-Planung; Messung dort: 200 Läufe mit numpy-Zufall, Rohausgaben `out_uz_v1_bis_v8.txt` (Messung V8) und `out_uz_v16_bis_v19.txt` (Messungen V19 und V19b).)
+Vormessung = eine erste, schnelle Messung vor dem Bau der Demo, mit dem Zufallsgenerator von NumPy und 200 Läufen. Die Zahlen daraus stehen hier nur als Vergleichswerte; es gilt die Zahl dieser Demo.
 
-1. **Zahlen weichen ab, es gilt die Zahl dieser Demo (1000 Läufe, SplitMix64).** Vormessung V8: aus Verkäufen 119,5 ± 0,2 (−37 %), aus Kaplan–Meier 183,0 ± 2,0 (−4 %), Kaplan–Meier in 54 % der Läufe definiert. Diese Demo: 119,2 (−37 %),
-   179,9 (−5 %) in 58 % der Läufe (583 von 1000). Die Vormessung V19 selbst gab für dieselbe Welt 62 % an; die Anteile der Vormessungen und dieser Messung schwanken um einige Punkte (200 Läufe haben bei 58 % einen Standardfehler von 3,5 Punkten).
+1. **Zahlen weichen ab, es gilt die Zahl dieser Demo (1000 Läufe, SplitMix64).** Vormessung: aus Verkäufen 119,5 ± 0,2 (−37 %), aus Kaplan–Meier 183,0 ± 2,0 (−4 %), Kaplan–Meier in 54 % der Läufe definiert. Diese Demo: 119,2 (−37 %),
+   179,9 (−5 %) in 58 % der Läufe (583 von 1000). Eine andere Zelle der Vormessung gab für dieselbe Welt 62 % an; die Anteile der Vormessung und dieser Messung schwanken um einige Punkte (200 Läufe haben bei 58 % einen Standardfehler von 3,5 Punkten).
    Über drei Zufalls-Seeds (je 1000 Läufe) liegt der Anteil bei 58 % bis 60 % (Tabelle „Stabilität“).
-2. **Die Tabelle V19 wird bis auf kleine Abstände reproduziert.** In den neun Zellen (Bestand 70, 100, 150 mal $\tau$ = 0,5, 0,8, 0,9) weicht jede Zahl der Vormessung für die Mehrkosten um höchstens 1,9 Prozentpunkte von dieser Messung ab
+2. **Die Tabelle der Vormessung (neun Zellen) wird bis auf kleine Abstände reproduziert.** In den neun Zellen (Bestand 70, 100, 150 mal $\tau$ = 0,5, 0,8, 0,9) weicht jede Zahl der Vormessung für die Mehrkosten um höchstens 1,9 Prozentpunkte von dieser Messung ab
    (größte Abweichung bei „Kaplan–Meier, nur wo schätzbar“, Bestand 70, $\tau$ = 0,9: 16,9 gegen 18,8), der Anteil schätzbarer Läufe um höchstens 4,6 Punkte (Bestand 70, $\tau$ = 0,8: 42 % gegen 47 %). Die Zahlen dieser Demo stehen in den Tabellen unten.
 3. **„Das zensierte Lognormal gewinnt nur bei richtiger Form, bei Gamma nicht“ ist zu grob und wird genauer gesagt.** In der Lognormal-Welt ist das zensierte Lognormal in allen 9 Zellen am günstigsten. In der Gamma-Welt ist es bei $\tau$ = 0,8 und 0,9
    teurer als Kaplan–Meier mit Rückfall (3,4 % gegen 2,2 % und 10,6 % gegen 3,2 % Mehrkosten), bleibt aber weit unter der Verkaufsregel (31,9 % und 62,5 %); beim Median ($\tau$ = 0,5) liegen beide unter 0,3 % und gleichauf (0,19 % gegen 0,22 %, Unterschied etwa 3 Standardfehler).
    Gilt für diese eine Form (gamma mit gleicher Streuung) und einen Bestand.
-4. **Der Rückfall „größter Wert“ ist neu mitgemessen** (die Vormessung V19b für Gamma hatte ihn nicht): bei Gamma, Bestand 100, 500 Perioden liegt er bei 2,2 % ($\tau$ = 0,8) und 3,2 % ($\tau$ = 0,9) Mehrkosten, Kaplan–Meier nur wo schätzbar
+4. **Der Rückfall „größter Wert“ ist neu mitgemessen** (die Vormessung für Gamma hatte ihn nicht): bei Gamma, Bestand 100, 500 Perioden liegt er bei 2,2 % ($\tau$ = 0,8) und 3,2 % ($\tau$ = 0,9) Mehrkosten, Kaplan–Meier nur wo schätzbar
    bei 1,5 % und 3,1 %. Er ist eine einfache Regel, keine Empfehlung.
-5. **Experiment 3 („Bestand zeitweise hoch ansetzen“) hatte im Plan keine Messung und ist hier gemessen.** In einem Anteil der Perioden wird der Bestand zufällig und unabhängig von der Nachfrage auf den Median 300 gesetzt: Schon 5 % Testperioden
+5. **Experiment 3 („Bestand zeitweise hoch ansetzen“) hatte in der Vormessung keine Messung und ist hier gemessen.** In einem Anteil der Perioden wird der Bestand zufällig und unabhängig von der Nachfrage auf den Median 300 gesetzt: Schon 5 % Testperioden
    machen das Quantil 0,9 in 97 % der Läufe schätzbar (vorher 58 %), die Mehrkosten von Kaplan–Meier mit Rückfall sinken aber erst ab 10 % Testperioden (4,0 % bei 5 %, 2,5 % bei 10 %, 1,1 % bei 30 %; vorher 3,0 %). Der Preis, der Überschuss je Periode
    (20,9 Stück ohne, 75,3 Stück bei 30 % Testperioden), steht in keiner Mehrkosten-Zahl. Das ist eine Eigenmessung in einer Welt.
 6. **Eine Kostenform, ein Bestandsmuster.** Die Kosten sind Fehlmenge $\tau$ und Überschuss $1 - \tau$ je Stück (nur das Verhältnis zählt); die Mehrkosten sind relativ zu den Kosten der besten Menge. Der Bestand ist unabhängig von der Nachfrage (lognormal, σ 0,3);
-   andere Bestandsmuster sind nicht gemessen (die Messlücke des Plans bleibt offen). Entscheidung Z4 des Plans (Kosten nur mit ihren Bedingungen nennen) gilt: Jede Kostenzahl nennt Bestand, $\tau$, Perioden und Läufe.
-7. **Mehr Handmuster als im Plan:** zusätzlich zum Handbeispiel eine Reihe ohne Ausverkauf, eine mit lauter Ausverkäufen und ein Gleichstand (genauer und ausverkaufter Wert bei derselben Zahl), alle in Brüchen getestet.
-8. **Orakel:** Der Plan nennt Kaplan–Meier gegen Aufzählung, das Lognormal gegen `scipy.optimize` und eine Simulation. Hinzu kommen eine Rastersuche und der geschlossene Fall, die erwarteten Kosten gegen numerische Integration und gegen Simulation sowie die beste Menge
-   gegen numerische Minimierung. **Kein Fremdcode-Orakel** (lifelines, statsmodels fehlen im Test-venv); SciPy ist Referenz für Likelihood, Integration und Minimierung.
+   andere Bestandsmuster sind nicht gemessen (diese Messlücke bleibt offen). Kostenzahlen werden nur mit ihren Bedingungen genannt: Jede Kostenzahl nennt Bestand, $\tau$, Perioden und Läufe.
+7. **Mehr Handmuster als zuerst vorgesehen:** zusätzlich zum Handbeispiel eine Reihe ohne Ausverkauf, eine mit lauter Ausverkäufen und ein Gleichstand (genauer und ausverkaufter Wert bei derselben Zahl), alle in Brüchen getestet.
+8. **Orakel:** Zuerst vorgesehen waren Kaplan–Meier gegen Aufzählung, das Lognormal gegen `scipy.optimize` und eine Simulation. Hinzu kommen eine Rastersuche und der geschlossene Fall, die erwarteten Kosten gegen numerische Integration und gegen Simulation sowie die beste Menge
+   gegen numerische Minimierung. **Kein Vergleich mit einem fremden Paket** (lifelines, statsmodels sind im Test-Umfeld nicht installiert); die Orakel sind unabhängig geschriebene Verfahren, SciPy ist Referenz für Likelihood, Integration und Minimierung.
 
 ## Modell
 
@@ -60,8 +59,8 @@ $C(q) = \tau\,\mathrm{E}[(D - q)^+] + (1 - \tau)\,\mathrm{E}[(q - D)^+]$; die be
 - **Zensiertes Lognormal:** Maximum Likelihood mit Dichte für genaue und Überlebensfunktion für ausverkaufte Werte, BFGS mit analytischem Gradienten.
 
 Die erwarteten Kosten einer Bestellmenge werden **geschlossen gegen die wahre Verteilung** gerechnet (Lognormal: Teilerwartung über die Normalverteilung; Gamma: regularisierte obere unvollständige Gamma-Funktion), nicht an einer Stichprobe.
-Formeln, Herleitung und Symboltabelle stehen im Expander „📐 Mathematische Formulierung“ der App, mit Lesehilfe. Der Kern (`znf_core.py`) ist eine Kopie aus der Linien-Vorlage (`ueberlebenszeit-planung/kern/uz_core.py`, Stand 2026-11-10):
-SplitMix64-Zufall, Eingabeprüfung, Kaplan–Meier mit Quantil („nicht schätzbar“ als nan) und das kleine BFGS; `tests/test_core.py` vergleicht die Funktionstexte mit der Quelle, falls sie vorhanden ist. Das zensierte Lognormal ist neu geschrieben (`znf_estimators.py`).
+Formeln, Herleitung und Symboltabelle stehen im Expander „📐 Mathematische Formulierung“ der App, mit Lesehilfe. Der Kern (`znf_core.py`) ist eine Kopie des gemeinsamen Kerns `uz_core.py` der Überlebenszeit-Linie (Stand 2026-11-10):
+SplitMix64-Zufall, Eingabeprüfung, Kaplan–Meier mit Quantil („nicht schätzbar“ als nan) und das kleine BFGS; `tests/test_core.py` vergleicht die Funktionstexte mit dem gemeinsamen Kern, falls er vorhanden ist. Das zensierte Lognormal ist neu geschrieben (`znf_estimators.py`).
 
 ## Methodik
 
@@ -195,7 +194,7 @@ Das Quantil 0,5 ist **9** (der kleinste genaue Wert mit $S \le 1/2$). Das Quanti
 (Derselbe Text steht in der App im Expander „⚠️ Annahmen, Grenzen und bekannte Probleme“; ein Test vergleicht beide.)
 
 **Annahmen**
-- Der Bestand je Periode ist unabhängig von der Nachfrage dieser Periode (hier erzeugt: Nachfrage und Bestand werden getrennt gezogen). Dann ist die Zensierung unabhängig vom Ereignis, und Kaplan–Meier ist gültig. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ (Stück „Informatives Zensieren“ der Linie).
+- Der Bestand je Periode ist unabhängig von der Nachfrage dieser Periode (hier erzeugt: Nachfrage und Bestand werden getrennt gezogen). Dann ist die Zensierung unabhängig vom Ereignis, und Kaplan–Meier ist gültig. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ (Demo „Informatives Zensieren“ der Linie).
 - Ausverkauft heißt, der Verkauf gleicht dem Bestand; dann ist die Nachfrage nur als „mindestens so viel wie der Bestand“ bekannt. Ist der Verkauf kleiner als der Bestand, ist die Nachfrage genau bekannt. Einen Verkauf von 0 gibt es nicht (die Rechnung verlangt Werte über 0).
 - Die Nachfrage ist von Periode zu Periode unabhängig und gleich verteilt (keine Saison, kein Trend), und Nachfrage, die bei Ausverkauf verloren geht, kommt nicht als Nachbestellung wieder.
 - Kosten: Fehlmenge τ je Stück, Überschuss 1 − τ je Stück, sonst nichts; die beste Bestellmenge ist dann das Quantil τ der Nachfrage. Die Mehrkosten sind relativ zu den Kosten dieser besten Bestellmenge, gerechnet gegen die wahre Verteilung.
@@ -230,7 +229,7 @@ Die Suite hat **136 Tests** (`pytest --collect-only -q tests`); Orakel-, Eigensc
 
 **Zahl → Test.** Zahlen aus den Messungen 1 bis 6 und aus den Presets: eingefroren in der JSON-Datei und in `tests/test_claims.py` mit dem Code der Demo neu gerechnet (Band 1e-6, Zählungen exakt); die Tabellen der README stammen Wort für Wort aus der Datei. Die Brüche der
 Handtabelle: exakt in `tests/test_model.py` und `tests/test_oracle_zensierte_nachfrage.py`. Die Kostenformeln (Wahrheit, beste Menge): `tests/test_model.py` (Handwerte) und `tests/test_oracle_zensierte_nachfrage.py` (Integration, Simulation mit Band). Weitere Zahlen
-im Text sind Handwerte (Brüche), Rechnungen aus der JSON-Datei oder die Zahlen der Vormessung, die nur im Abschnitt „Befunde und Korrekturen gegenüber dem Plan“ stehen und in `tests/test_claims.py` gegen diese Messung gehalten werden.
+im Text sind Handwerte (Brüche), Rechnungen aus der JSON-Datei oder die Zahlen der Vormessung, die nur im Abschnitt „Befunde und Korrekturen gegenüber der ersten Messung“ stehen und in `tests/test_claims.py` gegen diese Messung gehalten werden.
 
 ## Dateistruktur
 
@@ -240,7 +239,7 @@ im Text sind Handwerte (Brüche), Rechnungen aus der JSON-Datei oder die Zahlen 
 | `.gitignore` | venv, Caches, Streamlit-Secrets |
 | `.streamlit/config.toml` | Streamlit-Einstellungen (keine Nutzungsstatistik) |
 | `app.py` | Streamlit-App: vier Experimente, Annahmen, Formeln |
-| `znf_core.py` | Kopie aus `ueberlebenszeit-planung/kern/uz_core.py` (SplitMix64, Eingabeprüfung, Kaplan–Meier, Quantil, BFGS); wird nicht verändert |
+| `znf_core.py` | Kopie des gemeinsamen Kerns `uz_core.py` der Überlebenszeit-Linie (Stand 2026-11-10; SplitMix64, Eingabeprüfung, Kaplan–Meier, Quantil, BFGS); wird nicht verändert |
 | `znf_estimators.py` | Quantil aus den Verkäufen, schnelles Kaplan–Meier-Quantil, zensiertes Lognormal (Likelihood, Gradient, Anpassung) |
 | `znf_model.py` | Kosten gegen die wahre Verteilung, Läufe und Zusammenfassung, Handtabelle in Brüchen |
 | `znf_scenario.py` | Welt (World), Datenerzeugung mit SplitMix64, die vier Muster von Experiment 1 |
@@ -284,4 +283,4 @@ Gebaut mit Streamlit, Plotly, NumPy und SciPy.
 
 ---
 
-Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html).
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Überlebenszeit: zensierte Zeiten lesen](https://sebastianhanisch.net/konzepte-ueberlebenszeit.html).

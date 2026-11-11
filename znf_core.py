@@ -1,4 +1,4 @@
-"""Kopie aus ueberlebenszeit-planung/kern/uz_core.py, Stand 2026-11-10 (nur die Funktionen dieser Demo; der Rest ist gelöscht).
+"""Kopie des gemeinsamen Kerns uz_core.py der Überlebenszeit-Linie, Stand 2026-11-10 (nur die Funktionen dieser Demo; der Rest ist gelöscht).
 
 Enthalten: SplitMix64 (Zufall), SurvivalError und check_data (Eingabeprüfung), Kaplan–Meier mit `survival_at` und `quantile` („nicht schätzbar“ als nan)
 und das kleine BFGS `_bfgs`, mit dem znf_estimators.py das zensierte Lognormal anpasst. Nur numpy. Konventionen: Risikomenge bei t = {i : Zeit_i >= t};

@@ -51,7 +51,7 @@ PRESET_HELP = {
 # --- Annahmen, Grenzen und bekannte Probleme (derselbe Text steht in der README; ein Test vergleicht beide) -------------------------------------
 ASSUMPTIONS_MARKDOWN = """\
 **Annahmen**
-- Der Bestand je Periode ist unabhängig von der Nachfrage dieser Periode (hier erzeugt: Nachfrage und Bestand werden getrennt gezogen). Dann ist die Zensierung unabhängig vom Ereignis, und Kaplan–Meier ist gültig. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ (Stück „Informatives Zensieren“ der Linie).
+- Der Bestand je Periode ist unabhängig von der Nachfrage dieser Periode (hier erzeugt: Nachfrage und Bestand werden getrennt gezogen). Dann ist die Zensierung unabhängig vom Ereignis, und Kaplan–Meier ist gültig. Hängt der Bestand an einer Prognose der Nachfrage, ist die Zensierung informativ (Demo „Informatives Zensieren“ der Linie).
 - Ausverkauft heißt, der Verkauf gleicht dem Bestand; dann ist die Nachfrage nur als „mindestens so viel wie der Bestand“ bekannt. Ist der Verkauf kleiner als der Bestand, ist die Nachfrage genau bekannt. Einen Verkauf von 0 gibt es nicht (die Rechnung verlangt Werte über 0).
 - Die Nachfrage ist von Periode zu Periode unabhängig und gleich verteilt (keine Saison, kein Trend), und Nachfrage, die bei Ausverkauf verloren geht, kommt nicht als Nachbestellung wieder.
 - Kosten: Fehlmenge τ je Stück, Überschuss 1 − τ je Stück, sonst nichts; die beste Bestellmenge ist dann das Quantil τ der Nachfrage. Die Mehrkosten sind relativ zu den Kosten dieser besten Bestellmenge, gerechnet gegen die wahre Verteilung.
